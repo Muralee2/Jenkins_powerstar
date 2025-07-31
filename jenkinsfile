@@ -1,0 +1,51 @@
+pipeline {
+  agent any
+
+  environment {
+    IMAGE_NAME = "my-devops-app"
+    TAG = "build-${BUILD_NUMBER}"
+  }
+
+  stages {
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
+    }
+
+    stage('Build') {
+      steps {
+        dir('app') {
+          sh 'echo "Installing dependencies (simulated)"'
+        }
+      }
+    }
+
+    stage('Docker Build') {
+      steps {
+        sh 'docker build -t $IMAGE_NAME:$TAG .'
+      }
+    }
+
+    stage('Test') {
+      steps {
+        sh 'echo "Running tests (simulated)"'
+      }
+    }
+
+    stage('Deploy') {
+      steps {
+        sh './scripts/deploy.sh'
+      }
+    }
+  }
+
+  post {
+    success {
+      echo "✅ Pipeline completed successfully!"
+    }
+    failure {
+      echo "❌ Pipeline failed"
+    }
+  }
+}
